@@ -1,0 +1,23 @@
+{
+  "name": "eindopdracht_006_vegetable_garden",
+  "version": "1.0.0",
+  "description": "",
+  "main": "farm.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/desireezalm/desiree_zalm-VegetableGarden.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/desireezalm/desiree_zalm-VegetableGarden/issues"
+  },
+  "homepage": "https://github.com/desireezalm/desiree_zalm-VegetableGarden#readme",
+  "devDependencies": {
+    "jest": "^27.4.7"
+  }
+}

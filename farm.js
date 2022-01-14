@@ -139,34 +139,38 @@ profitKG(corn);
 // CALCULATION CODE
 const getYieldForPlant = (crop) => {
     //console.log(crop.name, crop.produceYield);
-    //return crop.produceYield;
+    return crop.produceYield;
+    
+    /*TEST CODE:
     produceYield = 30;
     return produceYield;
+    */
 };
 getYieldForPlant(corn);
 
-const getYieldForCrop = (crop) => {
-    const result = crops.find(element => element.name = crop)
+const getYieldForCrop = (crop, cropArray) => {
+    const result = cropArray.find(element => element.name = crop)
     //console.log("Yield of total crop: ", crop.name, result.numCrops * crop.produceYield);
-    //return result.numCrops * crop.produceYield;
+    return result.numCrops * crop.produceYield;
+    
+    /* TEST CODE:
     produceYield = 3;
     numCrops = 10;
     return produceYield * numCrops;
+    */
 };
-getYieldForCrop(corn);
+getYieldForCrop(corn, crops);
 
-const getTotalYield = () => {
-    const yieldArray = crops.map(element => {
+const getTotalYield = (cropArray) => {
+    const yieldArray = cropArray.map(element => {
         return element.numCrops * element.crop.produceYield;
     });
     const totalYield = yieldArray.reduce((acc, current) => acc + current, 0);
-    console.log("Total yield: ", totalYield);
+    //console.log("Total yield: ", totalYield);
     return totalYield;
 
-
-
 };
-getTotalYield();
+getTotalYield(crops);
 
 
 module.exports = {

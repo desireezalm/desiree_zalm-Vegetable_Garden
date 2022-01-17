@@ -92,22 +92,15 @@ getYieldForPlant(pumpkin);
 
 const getYieldForCrop = (cropType, cropArray) => {           
     cropArray.forEach(crop => {
-        console.log(numCrops);
-        console.log(Object.keys(crop));
-        console.log(Object.keys(crop));
-
-        //EXPERIMENTAL CODE:
-        /*
-        let cropObject = Object.keys(crop);
-        console.log(cropObject);
-        let nextIndex = cropObject.indexOf(crop) +1;
-        let nextItem = cropObject[nextIndex];
-        //console.log(nextItem);
-        */
+        //console.log(Object.keys(crop));
+        const cropQty = crop.numCrops;
         
         if(crop = cropType) {
+            const produceYield = cropType.yield;
+            console.log(produceYield);
             console.log("This is a: ", cropType.name); 
-            //console.log(Object.keys(cropType));            
+            //console.log("Quantity: ", cropQty, "Yield: ", cropType.yield);
+            console.log("Crop Yield: ", cropQty * cropType.yield);                       
         };                    
     });
     

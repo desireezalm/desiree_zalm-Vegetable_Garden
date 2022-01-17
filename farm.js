@@ -92,6 +92,7 @@ getYieldForPlant(pumpkin);
 
 const getYieldForCrop = (cropType, cropArray) => {           
     cropArray.forEach(crop => {
+        console.log(numCrops);
         console.log(Object.keys(crop));
         console.log(Object.keys(crop));
 

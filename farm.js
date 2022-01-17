@@ -95,6 +95,7 @@ const getYieldForCrop = (cropType, cropArray) => {
         console.log(Object.keys(crop));
         console.log(Object.keys(crop));
 
+        //EXPERIMENTAL CODE:
         /*
         let cropObject = Object.keys(crop);
         console.log(cropObject);

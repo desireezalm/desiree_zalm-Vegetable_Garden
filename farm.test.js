@@ -6,7 +6,8 @@ const { describe, test, expect } = require("@jest/globals");
 const { 
     getYieldForPlant, 
     getYieldForCrop, 
-    getTotalYield 
+    getTotalYield,
+    getCostForCrop 
 } = require("./farm");
 
 
@@ -65,5 +66,29 @@ describe("getTotalYield", () => {
         };
         const crops = [{ crop: corn, numCrops: 0 }];
         expect(getTotalYield({ crops })).toBe(0);
+    });
+});
+
+describe("getCostForCrop", () => {
+    test("Get cost for crop", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+        const input = {
+            crop: corn,
+            numCrops: 10,
+        };
+        expect(getCostForCrop(corn, input)).toBe(30);
+
     });
 });

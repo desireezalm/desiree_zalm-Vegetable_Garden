@@ -18,13 +18,13 @@ let salePrice; // Selling price of a type of fruit or vegetable for 1 KG
 // CROP TYPES
 const corn = {
     name: "corn",
-    produceYield: 3,
+    yield: 3,
     factor: {
         sun: {
             low: -50,
             medium: 0,
             high: 50
-        }
+        },
     },
     salePrice: 5,
     cost: 3
@@ -32,21 +32,21 @@ const corn = {
 
 const pumpkin = {
     name: "pumpkin",
-    produceYield: 4,
+    yield: 4,
     factor: {
         sun: {
             low: -50,
             medium: 0,
             high: 50
-        }
+        },
     },
     salePrice: 7,
     cost: 4
-}
+};
 
 const avocado = {
     name: "avocado",
-    produceYield: 3,
+    yield: 3,
     factor: {
         sun: {
             low: -20,
@@ -74,96 +74,47 @@ const environmentalFactors = {
 // CROPS IN VEGETABLE GARDEN
 const crops = [
     { crop: corn, numCrops: 5 },
-    { crop: pumpkin, numCrops: 2},
-    //{ crop: avocado, numCrops: 3}
+    { crop: pumpkin, numCrops: 2}
 ];
 
-const getCrops = () => {
-    crops.forEach(element => {
-        console.log("Crop: ", element.crop.name, element.numCrops);
-    });
-};
-//getCrops();
-
-// REVENUE OF 1 PLANT
-const revenuePlant = ( crop ) => {
-    //console.log("Revenue per plant: ", crop.name, crop.produceYield * crop.salePrice);
-    return crop.produceYield * crop.salePrice;
-};
-revenuePlant(corn);
-
-// REVENUE PER KG
-const revenueKG = (crop) => {
-    //console.log("Revenue of 1 KG produce: ", crop.name, crop.salePrice);
-    return crop.salePrice;
-};
-revenueKG(corn);
-
-// THE COST OF 1 PLANT
-const costPlant = (crop) => {
-    //console.log("Cost per plant: ", crop.name, crop.cost);
-    return crop.produceYield;
-};
-costPlant(corn);
-
-// THE COST PER KG
-const costKG = (crop) => {
-    const result = crop.cost / crop.produceYield;
-    //console.log("Cost of 1 KG produce: ", crop.name, Math.round(result * 100) / 100);
-    return Math.round(result * 100) / 100; // Cost of 1 KG of produce
-};
-costKG(corn);
-
-// THE PROFIT OF 1 PLANT (REVENUE MINUS COST)
-const profitPlant = (crop) => {
-    const resultRevenue = revenuePlant(crop);
-    const resultCost = costPlant(crop);
-    const result = resultRevenue - resultCost;
-    //console.log("Profit per plant: ", crop.name, result);
-    return result;
-};
-profitPlant(corn);
-
-// THE PROFIT PER KG
-const profitKG = (crop) => {
-    const resultRevenue = revenueKG(crop);
-    const resultCost = costKG(crop);
-    const result = resultRevenue - resultCost;
-    //console.log("Profit per KG: ", crop.name, result);
-    return result;
-};
-profitKG(corn);
 
 /* ----------------------------------------------------------------------------------*/
 
+
 // CALCULATION CODE
 const getYieldForPlant = (crop) => {
-    //console.log(crop.name, crop.produceYield);
-    return crop.produceYield;
-    
-    /*TEST CODE:
-    produceYield = 30;
-    return produceYield;
-    */
+    //console.log(crop.name, crop.yield);
+    const produceYield = crop.yield;
+    return produceYield;    
 };
-getYieldForPlant(corn);
+getYieldForPlant(pumpkin);
 
-const getYieldForCrop = (crop, cropArray) => {
-    const result = cropArray.find(element => element.name = crop)
-    //console.log("Yield of total crop: ", crop.name, result.numCrops * crop.produceYield);
-    return result.numCrops * crop.produceYield;
+
+const getYieldForCrop = (cropType, cropArray) => {           
+    cropArray.forEach(crop => {
+        console.log(Object.keys(crop));
+        console.log(Object.keys(crop));
+
+        /*
+        let cropObject = Object.keys(crop);
+        console.log(cropObject);
+        let nextIndex = cropObject.indexOf(crop) +1;
+        let nextItem = cropObject[nextIndex];
+        //console.log(nextItem);
+        */
+        
+        if(crop = cropType) {
+            console.log("This is a: ", cropType.name); 
+            //console.log(Object.keys(cropType));            
+        };                    
+    });
     
-    /* TEST CODE:
-    produceYield = 3;
-    numCrops = 10;
-    return produceYield * numCrops;
-    */
 };
-getYieldForCrop(corn, crops);
+getYieldForCrop(pumpkin, crops);
 
 const getTotalYield = (cropArray) => {
     const yieldArray = cropArray.map(element => {
-        return element.numCrops * element.crop.produceYield;
+        return element.numCrops * element.crop.yield;
     });
     const totalYield = yieldArray.reduce((acc, current) => acc + current, 0);
     //console.log("Total yield: ", totalYield);
@@ -172,9 +123,17 @@ const getTotalYield = (cropArray) => {
 };
 getTotalYield(crops);
 
+const getCostForCrop = (crop, cropArray) => {
+    const result = cropArray.find(element => element.name = crop);
+    //console.log("Cost of total crop: ", crop.name, result.numCrops * crop.cost);
+    return result.numCrops * crop.cost;    
+};
+getCostForCrop(corn, crops);
+
 
 module.exports = {
     getYieldForPlant, 
     getYieldForCrop, 
-    getTotalYield
+    getTotalYield,
+    getCostForCrop
 };

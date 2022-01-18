@@ -106,9 +106,9 @@ const getYieldForCrop = (cropType, cropArray) => {
 getYieldForCrop(pumpkin, crops);
 */
 
-//NEW CODE, CONVERTING THE ARRAY TO AN OBJECT GIVES ERROR THAT CROPGROUP.ASSIGN IS NOT A FUNCTION
+//NEW CODE, HAVING TROUBLE CONVERTING ARRAY INTO AN OBJECT SO THAT THE TEST SUCCEEDS.
 const getYieldForCrop = (cropGroup) => {    
-    const cropObject = cropGroup.assign( {}, cropGroup);
+    const cropObject = Object.assign( {}, cropGroup);
     console.log(cropObject);
     
     /*

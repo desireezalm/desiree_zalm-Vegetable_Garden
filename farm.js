@@ -69,14 +69,40 @@ const environmentalFactors = {
     wind: null,
     rain: null,
     soil: null
-}
+};
 
 // CROPS IN VEGETABLE GARDEN
 const crops = [
     { crop: corn, numCrops: 5 },
-    //{ crop: pumpkin, numCrops: 2},
+    { crop: pumpkin, numCrops: 2}
     //{ crop: avocado, numCrops: 10}
 ];
+//console.log(crops);
+
+
+// INPUT VARIABLES
+const cropInput = (cropArray, cropType) => {    
+    cropArray.forEach(element => {
+        const cropName = element.crop.name;
+        let query = cropType;       
+        if (cropName.includes(query.name) ) {
+            //console.log("Crop type: ", element);
+            return element;
+        };
+    });
+};
+cropInput(crops, corn);
+
+const inputCorn = {
+    crop: corn,
+    numCrops: 5
+};
+
+const inputPumpkin = {
+    crop: pumpkin,
+    numCrops: 2
+};
+
 
 /* ----------------------------------------------------------------------------------*/
 
@@ -85,10 +111,10 @@ const crops = [
 // YIELD PER PLANT
 const getYieldForPlant = (crop) => {
     const produceYield = crop.yield;
-    //console.log("Plant yield: ", produceYield);
+    console.log("Plant yield: ", produceYield);
     return produceYield;    
 };
-getYieldForPlant(corn);
+//getYieldForPlant(corn);
 
 // YIELD PER CROP
 //OLD CODE:
@@ -106,40 +132,60 @@ const getYieldForCrop = (cropType, cropArray) => {
 getYieldForCrop(pumpkin, crops);
 */
 
-//NEW CODE, HAVING TROUBLE CONVERTING ARRAY INTO AN OBJECT SO THAT THE TEST SUCCEEDS.
+//OLD REVISED CODE:
+/*
 const getYieldForCrop = (cropGroup) => {    
-    const cropObject = Object.assign( {}, cropGroup);
-    console.log(cropObject);
-    
-    /*
     cropGroup.forEach((element) => {
         console.log("Crop yield: ", element.crop.name, element.numCrops * element.crop.yield);
         return element.numCrops * element.crop.yield;
-    });
-    */
+    });    
 };
 getYieldForCrop(crops);
+*/
+
+//NEW CODE
+/*
+const getYieldForCrop = (cropGroup) => {
+    if (cropGroup.crop != undefined) {
+        console.log(cropGroup.crop.yield * cropGroup.numCrops);
+        return cropGroup.crop.yield * cropGroup.numCrops;
+    };
+};
+getYieldForCrop(crops);
+*/
+
+const getYieldForCrop = (input) => {
+
+    const result = input.numCrops * input.crop.yield;
+    console.log(`The crop yield for ${input.crop.name} is ${result}`);
+    return result;
+}
+getYieldForCrop(inputCorn);
+getYieldForCrop(inputPumpkin);
 
 
 // TOTAL YIELD OF GARDEN
-const getTotalYield = (cropArray) => {
-    const yieldArray = cropArray.map(element => {
+const getTotalYield = (cropObject) => {
+    const cropArray = cropObject['crops'].map(element => {
         return element.numCrops * element.crop.yield;
     });
-    const totalYield = yieldArray.reduce((acc, current) => acc + current, 0);
+    const totalYield = cropArray.reduce((acc, current) => acc + current, 0);
     console.log("Total yield: ", totalYield);
     return totalYield;
+
 };
-getTotalYield(crops);
+getTotalYield({crops});
+
 
 // COST PER CROP
-const getCostForCrop = (crop, cropArray) => {
-    const result = cropArray.find(element => element.name = crop);
-    //console.log("Cost of total crop: ", crop.name, result.numCrops * crop.cost);
-    return result.numCrops * crop.cost;    
-};
-getCostForCrop(corn, crops);
+const getCostForCrop = (input) => {
 
+    const result = input.numCrops * input.crop.cost;
+    console.log(`The crop cost for ${input.crop.name} is ${result}`);
+    return result;
+}
+getCostForCrop(inputCorn);
+getCostForCrop(inputPumpkin);
 
 module.exports = {
     getYieldForPlant, 

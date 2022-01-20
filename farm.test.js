@@ -43,6 +43,7 @@ describe("getYieldForCrop", () => {
 
 // GET TOTAL YIELD
 describe("getTotalYield", () => {
+    // TEST 1
     test("Calculate total yield with multiple crops", () => {
         const corn = {
             name: "corn",
@@ -59,6 +60,7 @@ describe("getTotalYield", () => {
         expect(getTotalYield({ crops })).toBe(23);
     });
 
+    // TEST 2
     test("Calculate total yield with 0 amount", () => {
         const corn = {
             name: "corn",
@@ -88,7 +90,7 @@ describe("getCostForCrop", () => {
             crop: corn,
             numCrops: 10,
         };
-        expect(getCostForCrop(corn, input)).toBe(30);
+        expect(getCostForCrop(input)).toBe(30);
 
     });
 });

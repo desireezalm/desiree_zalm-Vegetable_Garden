@@ -155,12 +155,10 @@ getYieldForCrop(crops);
 */
 
 const getYieldForCrop = (input) => {
-
     const result = input.numCrops * input.crop.yield;
-    console.log(`The crop yield for ${input.crop.name} is ${result}`);
+    //console.log(`The crop yield for ${input.crop.name} is ${result}`);
     return result;
-}
-getYieldForCrop(inputCorn);
+};
 getYieldForCrop(inputPumpkin);
 
 
@@ -170,26 +168,51 @@ const getTotalYield = (cropObject) => {
         return element.numCrops * element.crop.yield;
     });
     const totalYield = cropArray.reduce((acc, current) => acc + current, 0);
-    console.log("Total yield: ", totalYield);
+    //console.log("Total yield: ", totalYield);
     return totalYield;
-
 };
 getTotalYield({crops});
 
 
 // COST PER CROP
 const getCostForCrop = (input) => {
-
     const result = input.numCrops * input.crop.cost;
-    console.log(`The crop cost for ${input.crop.name} is ${result}`);
+    //console.log(`The crop cost for ${input.crop.name} is ${result}`);
     return result;
-}
-getCostForCrop(inputCorn);
-getCostForCrop(inputPumpkin);
+};
+//getCostForCrop(inputPumpkin);
+
+const getRevenueForCrop = (input) => {
+    const result = input.numCrops * (input.crop.yield * input.crop.salePrice);
+    //console.log(`The crop revenue for ${input.crop.name} is ${result}`);
+    return result;
+};
+//getRevenueForCrop(inputPumpkin);
+
+const getProfitForCrop = (input) => {
+    const result = getRevenueForCrop(input) - getCostForCrop(input);
+    //console.log(`The crop profit for ${input.crop.name} is ${result}`);
+    return result;
+};
+getProfitForCrop(inputPumpkin);
+
+const getTotalProfit = (cropArray) => {
+    const result = cropArray.map(element => {
+        const itemResult = getProfitForCrop(element);
+        return itemResult;
+    });
+    const totalProfit = result.reduce((acc, current) => acc + current, 0);
+    console.log("Total profit: ", totalProfit);
+    return totalProfit;
+};
+getTotalProfit(crops);
 
 module.exports = {
     getYieldForPlant, 
     getYieldForCrop, 
     getTotalYield,
-    getCostForCrop
+    getCostForCrop,
+    getRevenueForCrop,
+    getProfitForCrop,
+    getTotalProfit
 };

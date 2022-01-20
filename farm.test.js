@@ -7,7 +7,10 @@ const {
     getYieldForPlant, 
     getYieldForCrop, 
     getTotalYield,
-    getCostForCrop 
+    getCostForCrop,
+    getRevenueForCrop,
+    getProfitForCrop,
+    getTotalProfit
 } = require("./farm");
 
 
@@ -72,7 +75,7 @@ describe("getTotalYield", () => {
 });
 
 describe("getCostForCrop", () => {
-    test("Get cost for crop", () => {
+    test("Get cost for crop, simple", () => {
         const corn = {
             name: "corn",
             yield: 3,
@@ -92,5 +95,204 @@ describe("getCostForCrop", () => {
         };
         expect(getCostForCrop(input)).toBe(30);
 
+    });
+});
+
+describe("getRevenueForCrop", () => {
+    test("Get revenue for crop, simple", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+        const input = {
+            crop: corn,
+            numCrops: 10,
+        };
+        expect(getRevenueForCrop(input)).toBe(150);
+    });
+
+    // FAIL TEST:
+    test("get revenue with 0 qty", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+        const input = {
+            crop: corn,
+            numCrops: 0,
+        };
+        expect(getRevenueForCrop(input)).toBe(0);
+    });
+});
+
+describe("getProfitForCrop", () => {
+    test("Get profit for crop, simple", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+        const input = {
+            crop: corn,
+            numCrops: 10,
+        };
+        expect(getProfitForCrop(input)).toBe(120);
+    });
+
+    test("get profit with 0 qty", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+        const input = {
+            crop: corn,
+            numCrops: 0,
+        };
+        expect(getProfitForCrop(input)).toBe(0);
+    });
+});
+
+describe("getTotalProfit", () => {
+    test("Get total profit for multiple crops, simple", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+
+        const pumpkin = {
+            name: "pumpkin",
+            yield: 4,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                },
+            },
+            salePrice: 7,
+            cost: 4
+        };
+
+        const crops = [
+            { crop: corn, numCrops: 5 },
+            { crop: pumpkin, numCrops: 2 }
+        ];
+        expect(getTotalProfit(crops)).toBe(108);
+    });
+
+    test("Get total profit for multiple crops with 0 qty", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+
+        const pumpkin = {
+            name: "pumpkin",
+            yield: 4,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                },
+            },
+            salePrice: 7,
+            cost: 4
+        };
+
+        const crops = [
+            { crop: corn, numCrops: 0 },
+            { crop: pumpkin, numCrops: 0 }
+        ];
+        expect(getTotalProfit(crops)).toBe(0);
+    });
+
+    test("Get total profit for multiple crops with only 1 crop having qty", () => {
+        const corn = {
+            name: "corn",
+            yield: 3,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                }
+            },
+            salePrice: 5,
+            cost: 3
+        };
+
+        const pumpkin = {
+            name: "pumpkin",
+            yield: 4,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                },
+            },
+            salePrice: 7,
+            cost: 4
+        };
+
+        const crops = [
+            { crop: corn, numCrops: 10 },
+            { crop: pumpkin, numCrops: 0 }
+        ];
+        expect(getTotalProfit(crops)).toBe(120);
     });
 });

@@ -14,6 +14,13 @@ let salePrice; // Selling price of a type of fruit or vegetable for 1 KG
 // REVENUE: The income generated from 1 KG or 1 plant
 // PROFIT: The revenue minus the cost from 1 KG or 1 plant
 
+// ENVIRONMENTAL FACTORS
+const environmentalFactors = {
+    sun: "low",
+    wind: "high",
+    rain: "medium",
+    soil: "medium"
+};
 
 // CROP TYPES
 const corn = {
@@ -29,6 +36,7 @@ const corn = {
     salePrice: 5,
     cost: 3
 };
+//console.log(corn.factor.sun.low);
 
 const pumpkin = {
     name: "pumpkin",
@@ -63,19 +71,12 @@ const avocado = {
     cost: 4
 };
 
-// ENVIRONMENTAL FACTORS
-const environmentalFactors = {
-    sun: null,
-    wind: null,
-    rain: null,
-    soil: null
-};
 
 // CROPS IN VEGETABLE GARDEN
 const crops = [
     { crop: corn, numCrops: 5 },
-    { crop: pumpkin, numCrops: 2}
-    //{ crop: avocado, numCrops: 10}
+    { crop: pumpkin, numCrops: 2},
+    { crop: avocado, numCrops: 10}
 ];
 //console.log(crops);
 
@@ -108,52 +109,134 @@ const inputPumpkin = {
 
 // CALCULATIONS:
 
+// Filter out null and undefined properties
+const checkProperties = ((obj) => {
+    //console.log(obj);
+    for (let key in obj) {
+        if (obj[key] === null || obj[key] === undefined || obj[key] === 0) {
+            return false;
+        } else {
+            return true;
+        };
+    };
+});
+
+
 // YIELD PER PLANT
-const getYieldForPlant = (crop) => {
+const getYieldForPlant = (crop, envFactors) => {
     const produceYield = crop.yield;
-    console.log("Plant yield: ", produceYield);
-    return produceYield;    
+   
+    // Convert object envFactors into array with objects & filter properties
+    const resultArray = Object.keys(envFactors).map(function (key) {
+        return { [key]: envFactors[key] };
+    }).filter((factorObj) => {
+        if (checkProperties(factorObj) && checkProperties(crop.factor)) {
+            return factorObj;
+        };
+    }).map((nFactorObj) => {
+        for (let property in nFactorObj) {
+            return { factor: property, value: nFactorObj[property] };
+        };
+    });
+    
+    // Retrieve number from factor(s)
+    const numFactor = resultArray.map((factorItem) => {
+        let queryFactor = factorItem.factor;
+        let queryValue = factorItem.value;
+        let valueNum = crop.factor;
+        switch (queryFactor) {
+            case 'sun':
+                if (!valueNum.hasOwnProperty('sun')) {
+                    return 0;
+                } else {
+                    switch (queryValue) {
+                        case 'low':
+                            return valueNum.sun.low;
+                        case 'medium':
+                            return valueNum.sun.medium;
+                        case 'high':
+                            return valueNum.sun.high;
+                    };
+                    break;
+                };
+            case 'wind':
+                if (!valueNum.hasOwnProperty('wind')) {
+                    return 0;
+                } else {
+                    switch (queryValue) {
+                        case 'low':
+                            return valueNum.wind.low;
+                        case 'medium':
+                            return valueNum.wind.medium;
+                        case 'high':
+                            return valueNum.wind.high;
+                    };
+                    break;
+                };                
+            case 'rain':
+                if (!valueNum.hasOwnProperty('rain')) {
+                    return 0;
+                } else {
+                    switch (queryValue) {
+                        case 'low':
+                            return valueNum.rain.low;
+                        case 'medium':
+                            return valueNum.rain.medium;
+                        case 'high':
+                            return valueNum.rain.high;
+                    };
+                    break;
+                };                
+            case 'soil':
+                if (!valueNum.hasOwnProperty('soil')) {
+                    return 0;
+                } else {
+                    switch (queryValue) {
+                        case 'low':
+                            return valueNum.soil.low;
+                        case 'medium':
+                            return valueNum.soil.medium;
+                        case 'high':
+                            return valueNum.soil.high;   
+                    };
+                    break;
+                };                
+            default:
+                return 0;
+        };
+    });
+
+    // Convert percentages
+    const convFactor = numFactor.map((nFactor) => {
+        if(nFactor < 0) {
+            posNum = Math.abs(nFactor);
+            let calcPerc = (100 - posNum) / 100;
+            console.log("percentage", calcPerc, typeof calcPerc);
+            return calcPerc;
+        } else if (nFactor >= 0) {
+            let calcPerc = (nFactor) / 100;
+            console.log("percentage", calcPerc, typeof calcPerc);
+            return calcPerc;
+        }
+    }).reduce((result, factor) => {
+        if (factor != 0) {
+            console.log("Factor: ", factor);
+            console.log("Calculation: ", Math.round(((result * factor) + Number.EPSILON) * 100) / 100)
+            return Math.round(((result * factor) + Number.EPSILON) * 100) / 100;
+        } else if (factor == 0) {
+            return result;
+        }
+        //console.log("Result: ", result);
+        
+    }, produceYield);
+    console.log("Converted factor: ", convFactor);
+    
 };
-//getYieldForPlant(corn);
+getYieldForPlant(avocado, environmentalFactors);
+
+
 
 // YIELD PER CROP
-//OLD CODE:
-/*
-const getYieldForCrop = (cropType, cropArray) => {
-    cropArray.forEach(element => {
-        const cropName = element.crop.name;
-        let query = cropType;        
-        if (cropName.includes(query.name) ) {
-            console.log("Crop yield: ", element.numCrops * element.crop.yield);
-            return element.numCrops * element.crop.yield;
-        }    
-    });
-};
-getYieldForCrop(pumpkin, crops);
-*/
-
-//OLD REVISED CODE:
-/*
-const getYieldForCrop = (cropGroup) => {    
-    cropGroup.forEach((element) => {
-        console.log("Crop yield: ", element.crop.name, element.numCrops * element.crop.yield);
-        return element.numCrops * element.crop.yield;
-    });    
-};
-getYieldForCrop(crops);
-*/
-
-//NEW CODE
-/*
-const getYieldForCrop = (cropGroup) => {
-    if (cropGroup.crop != undefined) {
-        console.log(cropGroup.crop.yield * cropGroup.numCrops);
-        return cropGroup.crop.yield * cropGroup.numCrops;
-    };
-};
-getYieldForCrop(crops);
-*/
-
 const getYieldForCrop = (input) => {
     const result = input.numCrops * input.crop.yield;
     //console.log(`The crop yield for ${input.crop.name} is ${result}`);
@@ -202,7 +285,7 @@ const getTotalProfit = (cropArray) => {
         return itemResult;
     });
     const totalProfit = result.reduce((acc, current) => acc + current, 0);
-    console.log("Total profit: ", totalProfit);
+    //console.log("Total profit: ", totalProfit);
     return totalProfit;
 };
 getTotalProfit(crops);

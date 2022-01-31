@@ -25,7 +25,7 @@ const environmentalFactors = {
 // CROP TYPES
 const corn = {
     name: "corn",
-    yield: 3,
+    yield: 30,
     factor: {
         sun: {
             low: -50,
@@ -104,6 +104,11 @@ const inputPumpkin = {
     numCrops: 2
 };
 
+const inputAvocado = {
+    crop: avocado,
+    numCrops: 10,
+};
+
 
 /* ----------------------------------------------------------------------------------*/
 
@@ -121,34 +126,34 @@ const checkProperties = ((obj) => {
     };
 });
 
-
-// YIELD PER PLANT
-const getYieldForPlant = (crop, envFactors) => {
-    const produceYield = crop.yield;
-   
-    // Convert object envFactors into array with objects & filter properties
+// Extract & convert object into array with objects & filter properties
+const convertArray = (envFactors, crop) => {
+    
     const resultArray = Object.keys(envFactors).map(function (key) {
-        return { [key]: envFactors[key] };
+        return { [key]: envFactors[key] }
     }).filter((factorObj) => {
         if (checkProperties(factorObj) && checkProperties(crop.factor)) {
             return factorObj;
-        };
+        }
     }).map((nFactorObj) => {
         for (let property in nFactorObj) {
             return { factor: property, value: nFactorObj[property] };
         };
     });
-    
-    // Retrieve number from factor(s)
+    //console.log(resultArray);
+    return resultArray;
+};
+
+// Retrieve number from factor(s)
+const getNumArray = (envFactors, crop) => {    
+    const resultArray = convertArray(envFactors, crop)
     const numFactor = resultArray.map((factorItem) => {
         let queryFactor = factorItem.factor;
         let queryValue = factorItem.value;
         let valueNum = crop.factor;
         switch (queryFactor) {
             case 'sun':
-                if (!valueNum.hasOwnProperty('sun')) {
-                    return 0;
-                } else {
+                if (valueNum.hasOwnProperty('sun')) {
                     switch (queryValue) {
                         case 'low':
                             return valueNum.sun.low;
@@ -160,9 +165,7 @@ const getYieldForPlant = (crop, envFactors) => {
                     break;
                 };
             case 'wind':
-                if (!valueNum.hasOwnProperty('wind')) {
-                    return 0;
-                } else {
+                if (valueNum.hasOwnProperty('wind')) {
                     switch (queryValue) {
                         case 'low':
                             return valueNum.wind.low;
@@ -174,9 +177,7 @@ const getYieldForPlant = (crop, envFactors) => {
                     break;
                 };                
             case 'rain':
-                if (!valueNum.hasOwnProperty('rain')) {
-                    return 0;
-                } else {
+                if (valueNum.hasOwnProperty('rain')) {
                     switch (queryValue) {
                         case 'low':
                             return valueNum.rain.low;
@@ -188,9 +189,7 @@ const getYieldForPlant = (crop, envFactors) => {
                     break;
                 };                
             case 'soil':
-                if (!valueNum.hasOwnProperty('soil')) {
-                    return 0;
-                } else {
+                if (valueNum.hasOwnProperty('soil')) {
                     switch (queryValue) {
                         case 'low':
                             return valueNum.soil.low;
@@ -205,45 +204,63 @@ const getYieldForPlant = (crop, envFactors) => {
                 return 0;
         };
     });
+    //console.log("NumFactor: ", numFactor);
+    return numFactor;
+};
 
-    // Convert percentages
-    const convFactor = numFactor.map((nFactor) => {
+/* -----------------------------------------------------------------------*/
+
+// YIELD PER PLANT
+const getYieldForPlant = (crop, envFactors) => {
+    const produceYield = crop.yield;
+    
+    // Convert percentages & calculate yield
+    const numFactor = getNumArray(envFactors, crop);
+    const yieldCalc = numFactor.map((nFactor) => {
         if(nFactor < 0) {
             posNum = Math.abs(nFactor);
             let calcPerc = (100 - posNum) / 100;
-            console.log("percentage", calcPerc, typeof calcPerc);
             return calcPerc;
         } else if (nFactor >= 0) {
             let calcPerc = (nFactor) / 100;
-            console.log("percentage", calcPerc, typeof calcPerc);
             return calcPerc;
         }
     }).reduce((result, factor) => {
         if (factor != 0) {
-            console.log("Factor: ", factor);
-            console.log("Calculation: ", Math.round(((result * factor) + Number.EPSILON) * 100) / 100)
             return Math.round(((result * factor) + Number.EPSILON) * 100) / 100;
         } else if (factor == 0) {
             return result;
-        }
-        //console.log("Result: ", result);
-        
+        }        
     }, produceYield);
-    console.log("Converted factor: ", convFactor);
+    console.log(`Yield per plant: ${crop.name} - ${yieldCalc}KG`);
+    return yieldCalc;
     
 };
 getYieldForPlant(avocado, environmentalFactors);
 
-
+/* -------------------------------------------------------*/
 
 // YIELD PER CROP
-const getYieldForCrop = (input) => {
-    const result = input.numCrops * input.crop.yield;
-    //console.log(`The crop yield for ${input.crop.name} is ${result}`);
+const getYieldForCrop = (input, envFactors) => {
+
+    const inputCrop = input.crop;
+    const plantYield = getYieldForPlant(inputCrop, envFactors);
+    const result = input.numCrops * plantYield;
+    console.log(`Crop yield: ${input.crop.name} - ${result}KG`);
     return result;
 };
-getYieldForCrop(inputPumpkin);
+getYieldForCrop(inputAvocado, environmentalFactors);
 
+/*
+
+const inputAvocado = {
+    crop: avocado,
+    numCrops: 10,
+};
+
+*/
+
+/* -------------------------------------------------------*/
 
 // TOTAL YIELD OF GARDEN
 const getTotalYield = (cropObject) => {
@@ -256,6 +273,7 @@ const getTotalYield = (cropObject) => {
 };
 getTotalYield({crops});
 
+/* -------------------------------------------------------*/
 
 // COST PER CROP
 const getCostForCrop = (input) => {
@@ -265,6 +283,8 @@ const getCostForCrop = (input) => {
 };
 //getCostForCrop(inputPumpkin);
 
+/* -------------------------------------------------------*/
+
 const getRevenueForCrop = (input) => {
     const result = input.numCrops * (input.crop.yield * input.crop.salePrice);
     //console.log(`The crop revenue for ${input.crop.name} is ${result}`);
@@ -272,12 +292,16 @@ const getRevenueForCrop = (input) => {
 };
 //getRevenueForCrop(inputPumpkin);
 
+/* -------------------------------------------------------*/
+
 const getProfitForCrop = (input) => {
     const result = getRevenueForCrop(input) - getCostForCrop(input);
     //console.log(`The crop profit for ${input.crop.name} is ${result}`);
     return result;
 };
 getProfitForCrop(inputPumpkin);
+
+/* -------------------------------------------------------*/
 
 const getTotalProfit = (cropArray) => {
     const result = cropArray.map(element => {
@@ -289,6 +313,8 @@ const getTotalProfit = (cropArray) => {
     return totalProfit;
 };
 getTotalProfit(crops);
+
+/* -------------------------------------------------------*/
 
 module.exports = {
     getYieldForPlant, 

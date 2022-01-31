@@ -24,12 +24,15 @@ describe("getYieldForPlant", () => {
         yield: 30,
     };
 
+    const environmentalFactors = {
+    };
+
     test("Get yield for plant with no environment factors", () => {
-        expect(getYieldForPlant(corn)).toBe(30);
+        expect(getYieldForPlant(corn, environmentalFactors)).toBe(30);
     });
 });
 
-describe("getYieldForPlant", () => {
+describe("getYieldForPlant (incl. environmental factors)", () => {
     const corn = {
         name: "corn",
         yield: 30,
@@ -43,13 +46,16 @@ describe("getYieldForPlant", () => {
     };
 
     const environmentalFactors = {
-        sun: "low"
+        sun: "low",
+        rain: "medium"
     };
 
     test("Get yield for plant with environment factor", () => {
-        expect(getYieldForPlant(corn)).toBe(30);
+        expect(getYieldForPlant(corn, environmentalFactors)).toBe(15);
     });
 });
+
+/* -------------------------------------------------------*/
 
 // GET YIELD FOR CROP
 describe("getYieldForCrop", () => {
@@ -62,9 +68,41 @@ describe("getYieldForCrop", () => {
             crop: corn,
             numCrops: 10,
         };
-        expect(getYieldForCrop(input)).toBe(30);
+
+        const environmentalFactors = {
+        };
+
+        expect(getYieldForCrop(input, environmentalFactors)).toBe(30);
     });
 });
+
+describe("getYieldForCrop (incl. environmental factors)", () => {
+    test("Get yield for crop with environment factors", () => {
+        const corn = {
+            name: "corn",
+            yield: 30,
+            factor: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50
+                },
+            },
+        };
+        const input = {
+            crop: corn,
+            numCrops: 10,
+        };
+
+        const environmentalFactors = {
+            sun: "low",
+            rain: "medium"
+        };
+        expect(getYieldForCrop(input, environmentalFactors)).toBe(150);
+    });
+});
+
+/* -------------------------------------------------------*/
 
 // GET TOTAL YIELD
 describe("getTotalYield", () => {

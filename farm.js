@@ -1,11 +1,5 @@
 // ASSIGNMENT: VEGETABLE GARDEN
 
-// CONSTANTS:
-let cost; // Cost of sowing 1 plant
-let numCrops; // Number of crops sown
-let produceYield; // Yield of 1 plant or 1 crop in KG
-let salePrice; // Selling price of a type of fruit or vegetable for 1 KG
-
 // DESCRIPTIONS:
 // COST: The cost of sowing 1 plant or 1 KG
 // PRODUCE YIELD: The yield of 1 plant
@@ -25,7 +19,7 @@ const environmentalFactors = {
 // CROP TYPES
 const corn = {
     name: "corn",
-    yield: 30,
+    yield: 3,
     factor: {
         sun: {
             low: -50,
@@ -36,7 +30,6 @@ const corn = {
     salePrice: 5,
     cost: 3
 };
-//console.log(corn.factor.sun.low);
 
 const pumpkin = {
     name: "pumpkin",
@@ -71,29 +64,14 @@ const avocado = {
     cost: 4
 };
 
-
 // CROPS IN VEGETABLE GARDEN
 const crops = [
     { crop: corn, numCrops: 5 },
     { crop: pumpkin, numCrops: 2},
     { crop: avocado, numCrops: 10}
 ];
-//console.log(crops);
-
 
 // INPUT VARIABLES
-const cropInput = (cropArray, cropType) => {    
-    cropArray.forEach(element => {
-        const cropName = element.crop.name;
-        let query = cropType;       
-        if (cropName.includes(query.name) ) {
-            //console.log("Crop type: ", element);
-            return element;
-        };
-    });
-};
-cropInput(crops, corn);
-
 const inputCorn = {
     crop: corn,
     numCrops: 5
@@ -112,11 +90,9 @@ const inputAvocado = {
 
 /* ----------------------------------------------------------------------------------*/
 
-// CALCULATIONS:
 
-// Filter out null and undefined properties
+// Filter out null, undefined & 0
 const checkProperties = ((obj) => {
-    //console.log(obj);
     for (let key in obj) {
         if (obj[key] === null || obj[key] === undefined || obj[key] === 0) {
             return false;
@@ -140,7 +116,6 @@ const convertArray = (envFactors, crop) => {
             return { factor: property, value: nFactorObj[property] };
         };
     });
-    //console.log(resultArray);
     return resultArray;
 };
 
@@ -204,11 +179,12 @@ const getNumArray = (envFactors, crop) => {
                 return 0;
         };
     });
-    //console.log("NumFactor: ", numFactor);
     return numFactor;
 };
 
 /* -----------------------------------------------------------------------*/
+
+// CALCULATIONS:
 
 // YIELD PER PLANT
 const getYieldForPlant = (crop, envFactors) => {
@@ -233,8 +209,7 @@ const getYieldForPlant = (crop, envFactors) => {
         }        
     }, produceYield);
     console.log(`Yield per plant: ${crop.name} - ${yieldCalc}KG`);
-    return yieldCalc;
-    
+    return yieldCalc;    
 };
 getYieldForPlant(avocado, environmentalFactors);
 
@@ -251,68 +226,61 @@ const getYieldForCrop = (input, envFactors) => {
 };
 getYieldForCrop(inputAvocado, environmentalFactors);
 
-/*
-
-const inputAvocado = {
-    crop: avocado,
-    numCrops: 10,
-};
-
-*/
-
 /* -------------------------------------------------------*/
 
 // TOTAL YIELD OF GARDEN
-const getTotalYield = (cropObject) => {
-    const cropArray = cropObject['crops'].map(element => {
-        return element.numCrops * element.crop.yield;
-    });
-    const totalYield = cropArray.reduce((acc, current) => acc + current, 0);
-    //console.log("Total yield: ", totalYield);
+const getTotalYield = (cropObject, envFactors) => {
+    const totalYield = cropObject['crops'].map(cropObj => {
+        const cropYield = getYieldForCrop(cropObj, envFactors);
+        return cropYield;
+    }).reduce((acc, current) => acc + current, 0);
+    console.log(`Total yield: ${totalYield}KG`);
     return totalYield;
 };
-getTotalYield({crops});
+getTotalYield({crops}, environmentalFactors);
 
 /* -------------------------------------------------------*/
 
 // COST PER CROP
 const getCostForCrop = (input) => {
     const result = input.numCrops * input.crop.cost;
-    //console.log(`The crop cost for ${input.crop.name} is ${result}`);
+    console.log(`Crop cost: ${input.crop.name} - ${result} Euro`);
     return result;
 };
-//getCostForCrop(inputPumpkin);
+getCostForCrop(inputAvocado);
 
 /* -------------------------------------------------------*/
 
-const getRevenueForCrop = (input) => {
-    const result = input.numCrops * (input.crop.yield * input.crop.salePrice);
-    //console.log(`The crop revenue for ${input.crop.name} is ${result}`);
+// REVENUE PER CROP
+const getRevenueForCrop = (input, envFactors) => {
+    const cropYield = getYieldForCrop(input, envFactors);
+    const result = cropYield * input.crop.salePrice;
+    console.log(`Crop revenue: ${input.crop.name} - ${result} Euro`);
     return result;
 };
-//getRevenueForCrop(inputPumpkin);
+getRevenueForCrop(inputAvocado, environmentalFactors);
 
 /* -------------------------------------------------------*/
 
-const getProfitForCrop = (input) => {
-    const result = getRevenueForCrop(input) - getCostForCrop(input);
-    //console.log(`The crop profit for ${input.crop.name} is ${result}`);
+const getProfitForCrop = (input, envFactors) => {
+    const result = getRevenueForCrop(input, envFactors) - getCostForCrop(input);
+    console.log(`Crop profit: ${input.crop.name} - ${result} Euro`);
     return result;
 };
-getProfitForCrop(inputPumpkin);
+getProfitForCrop(inputAvocado, environmentalFactors);
 
 /* -------------------------------------------------------*/
 
-const getTotalProfit = (cropArray) => {
+const getTotalProfit = (cropArray, envFactors) => {
     const result = cropArray.map(element => {
-        const itemResult = getProfitForCrop(element);
+        const itemResult = getProfitForCrop(element, envFactors);
         return itemResult;
     });
     const totalProfit = result.reduce((acc, current) => acc + current, 0);
-    //console.log("Total profit: ", totalProfit);
+    console.log(`Total profit: ${totalProfit} Euro`);
     return totalProfit;
 };
-getTotalProfit(crops);
+getTotalProfit(crops, environmentalFactors);
 
 /* -------------------------------------------------------*/
 
